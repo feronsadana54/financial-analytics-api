@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.env
+.env.local
+coverage
+logs
+*.log
+tmp
+temp
+.DS_Store
+PRIVATE_NOTES.txt
+DEVELOPMENT_GUIDE_PRIVATE.txt
+TESTING_NOTES_PRIVATE.txt
+*_PRIVATE.txt

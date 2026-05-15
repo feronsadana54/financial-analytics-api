@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MANAGER
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      Role       @default(USER)
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id        String                 @id @default(uuid())
+  categoryId String
+  category  Category               @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  name      String
+  sku       String                 @unique
+  price     Decimal                @db.Decimal(14, 2)
+  cost      Decimal                @db.Decimal(14, 2)
+  stock     Int                    @default(0)
+  items     SalesTransactionItem[]
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+model SalesTransaction {
+  id              String                 @id @default(uuid())
+  transactionDate DateTime
+  customerName    String
+  totalAmount     Decimal                @db.Decimal(14, 2)
+  totalCost       Decimal                @db.Decimal(14, 2)
+  grossProfit     Decimal                @db.Decimal(14, 2)
+  items           SalesTransactionItem[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([transactionDate])
+  @@map("sales_transactions")
+}
+
+model SalesTransactionItem {
+  id                 String           @id @default(uuid())
+  salesTransactionId String
+  productId          String
+  salesTransaction   SalesTransaction @relation(fields: [salesTransactionId], references: [id], onDelete: Cascade)
+  product            Product          @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity           Int
+  unitPrice          Decimal          @db.Decimal(14, 2)
+  unitCost           Decimal          @db.Decimal(14, 2)
+  subtotal           Decimal          @db.Decimal(14, 2)
+  profit             Decimal          @db.Decimal(14, 2)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([salesTransactionId])
+  @@index([productId])
+  @@map("sales_transaction_items")
+}
+
+model ExpenseCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  expenses    Expense[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("expense_categories")
+}
+
+model Expense {
+  id                String          @id @default(uuid())
+  expenseCategoryId String
+  expenseCategory   ExpenseCategory @relation(fields: [expenseCategoryId], references: [id], onDelete: Restrict)
+  expenseDate       DateTime
+  title             String
+  amount            Decimal         @db.Decimal(14, 2)
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([expenseCategoryId])
+  @@index([expenseDate])
+  @@map("expenses")
+}
