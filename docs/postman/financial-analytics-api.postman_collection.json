@@ -1,0 +1,1093 @@
+{
+  "info": {
+    "_postman_id": "0a1b2c3d-4e5f-4061-8723-9a0b1c2d3e4f",
+    "name": "Financial Analytics API",
+    "description": "Collection lengkap untuk Financial Analytics API. Endpoint dikelompokkan per resource: Auth, Dashboard, Users, Products, Categories, Sales, Expenses.\n\nSemua endpoint protected memakai header Authorization: Bearer {{accessToken}}. Jalankan request Login Admin terlebih dahulu agar token otomatis tersimpan ke environment variable accessToken.\n\nResponse backend memakai envelope { success, message, data }. Test script di collection ini membaca token dan ID dari response.data.\n\nGunakan environment Financial Analytics Local saat menjalankan request.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Endpoint untuk login, register, dan mengambil profil user yang sedang login. Login akan otomatis menyimpan accessToken ke environment.",
+      "item": [
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "",
+                  "const data = body && body.data ? body.data : {};",
+                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "if (token) {",
+                  "    pm.environment.set(\"accessToken\", token);",
+                  "    console.log(\"accessToken stored to environment\");",
+                  "} else {",
+                  "    console.warn(\"Login response did not contain accessToken\");",
+                  "}",
+                  "",
+                  "if (data && data.user && data.user.id) {",
+                  "    pm.environment.set(\"currentUserId\", data.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login sebagai SUPER_ADMIN. Token disimpan otomatis ke variable accessToken."
+          }
+        },
+        {
+          "name": "Login Manager",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "",
+                  "const data = body && body.data ? body.data : {};",
+                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "if (token) {",
+                  "    pm.environment.set(\"accessToken\", token);",
+                  "} else {",
+                  "    console.warn(\"Login response did not contain accessToken\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{managerEmail}}\",\n  \"password\": \"{{managerPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login sebagai MANAGER. Token disimpan otomatis ke variable accessToken."
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "",
+                  "const data = body && body.data ? body.data : {};",
+                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "if (token) {",
+                  "    pm.environment.set(\"accessToken\", token);",
+                  "} else {",
+                  "    console.warn(\"Login response did not contain accessToken\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login sebagai USER. Token disimpan otomatis ke variable accessToken."
+          }
+        },
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "",
+                  "const data = body && body.data ? body.data : {};",
+                  "const token = data.accessToken || data.token;",
+                  "if (token) {",
+                  "    pm.environment.set(\"accessToken\", token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo.user@example.com\",\n  \"password\": \"DemoUser12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register akun publik. Role default selalu USER. Setelah register sukses, token juga disimpan."
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Ambil profil user yang sedang login berdasarkan accessToken."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Endpoint analytics. Semua membutuhkan accessToken dan dapat menerima filter query opsional: startDate, endDate, year, month, categoryId, productId.",
+      "item": [
+        {
+          "name": "Get Dashboard Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/summary?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "summary"],
+              "query": [
+                { "key": "year", "value": "2025" },
+                { "key": "month", "value": "", "disabled": true },
+                { "key": "startDate", "value": "", "disabled": true },
+                { "key": "endDate", "value": "", "disabled": true },
+                { "key": "categoryId", "value": "{{categoryId}}", "disabled": true },
+                { "key": "productId", "value": "{{productId}}", "disabled": true }
+              ]
+            },
+            "description": "Ringkasan keuangan: revenue, expense, gross profit, net profit, margin, orders, products sold, average order value, growth."
+          }
+        },
+        {
+          "name": "Get Revenue Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/revenue-trend?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "revenue-trend"],
+              "query": [
+                { "key": "year", "value": "2025" },
+                { "key": "month", "value": "", "disabled": true },
+                { "key": "categoryId", "value": "{{categoryId}}", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Profit Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/profit-trend?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "profit-trend"],
+              "query": [
+                { "key": "year", "value": "2025" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Expense Breakdown",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/expense-breakdown?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "expense-breakdown"],
+              "query": [
+                { "key": "year", "value": "2025" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/product-performance?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "product-performance"],
+              "query": [
+                { "key": "year", "value": "2025" },
+                { "key": "productId", "value": "{{productId}}", "disabled": true },
+                { "key": "categoryId", "value": "{{categoryId}}", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Category Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/category-distribution?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "category-distribution"],
+              "query": [
+                { "key": "year", "value": "2025" },
+                { "key": "categoryId", "value": "{{categoryId}}", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Top Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/top-products?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "top-products"],
+              "query": [
+                { "key": "year", "value": "2025" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Revenue vs Expense",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/revenue-vs-expense?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "revenue-vs-expense"],
+              "query": [
+                { "key": "year", "value": "2025" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "description": "User management. GET list dan detail untuk MANAGER+ . POST/PATCH/DELETE hanya untuk SUPER_ADMIN. Login sebagai admin terlebih dahulu. DELETE bersifat soft delete: status diubah menjadi INACTIVE.",
+      "item": [
+        {
+          "name": "Get Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"userId\", list[0].id);",
+                  "    console.log(\"userId set to first user in list\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get User Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const created = body && body.data ? body.data : {};",
+                  "if (created && created.id) {",
+                  "    pm.environment.set(\"userId\", created.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Finance Staff\",\n  \"email\": \"finance.staff@example.com\",\n  \"password\": \"Finance12345\",\n  \"role\": \"USER\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Finance Staff Updated\",\n  \"email\": \"finance.staff.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            },
+            "description": "Field name, email, dan password bersifat opsional. Jika password tidak disertakan, password lama tetap dipakai."
+          }
+        },
+        {
+          "name": "Update User Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"NewStrongPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            },
+            "description": "Contoh update khusus password. Backend hanya mengganti password jika field ini dikirim dan tidak kosong."
+          }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"MANAGER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "role"]
+            },
+            "description": "Role bisa USER, MANAGER, atau SUPER_ADMIN. SUPER_ADMIN tidak bisa mengubah role akunnya sendiri."
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "status"]
+            },
+            "description": "Status: ACTIVE atau INACTIVE. User INACTIVE tidak bisa login."
+          }
+        },
+        {
+          "name": "Deactivate User (soft delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            },
+            "description": "DELETE pada user adalah soft delete. Backend mengubah status menjadi INACTIVE, bukan menghapus row dari database."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "description": "CRUD products. GET bisa diakses semua role authenticated. POST/PATCH/DELETE membutuhkan MANAGER atau SUPER_ADMIN.",
+      "item": [
+        {
+          "name": "Get Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"productId\", list[0].id);",
+                  "    if (list[0].categoryId) pm.environment.set(\"categoryId\", list[0].categoryId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const created = body && body.data ? body.data : {};",
+                  "if (created && created.id) {",
+                  "    pm.environment.set(\"productId\", created.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"name\": \"Wireless Keyboard\",\n  \"sku\": \"PRD-KEYBOARD-001\",\n  \"price\": 450000,\n  \"cost\": 275000,\n  \"stock\": 120\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Pastikan categoryId valid (jalankan Get Categories atau Create Category dulu)."
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wireless Keyboard Pro\",\n  \"price\": 500000,\n  \"cost\": 300000,\n  \"stock\": 100,\n  \"categoryId\": \"{{categoryId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "CRUD product categories. GET untuk semua authenticated user. Mutasi butuh MANAGER atau SUPER_ADMIN.",
+      "item": [
+        {
+          "name": "Get Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"categoryId\", list[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const created = body && body.data ? body.data : {};",
+                  "if (created && created.id) {",
+                  "    pm.environment.set(\"categoryId\", created.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Office Equipment\",\n  \"description\": \"Products related to office equipment and productivity tools\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Office Equipment Updated\",\n  \"description\": \"Updated category description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Kategori yang masih dipakai produk tidak dapat dihapus (foreign key restrict)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "description": "CRUD sales transactions. POST bisa diakses semua authenticated user. PATCH dan DELETE membutuhkan MANAGER atau SUPER_ADMIN.\n\nCatatan: backend menghitung unitPrice, unitCost, subtotal, dan profit dari data produk pada saat create. PATCH dengan field items akan mengganti ID transaksi (delete + create).",
+      "item": [
+        {
+          "name": "Get Sales",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"saleId\", list[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales"]
+            }
+          }
+        },
+        {
+          "name": "Get Sale Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Sale",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const created = body && body.data ? body.data : {};",
+                  "if (created && created.id) {",
+                  "    pm.environment.set(\"saleId\", created.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionDate\": \"2026-02-15T00:00:00.000Z\",\n  \"customerName\": \"PT Demo Customer\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales"]
+            },
+            "description": "Backend hanya membutuhkan productId dan quantity untuk setiap item. Harga, biaya, subtotal, dan profit dihitung otomatis dari master produk."
+          }
+        },
+        {
+          "name": "Update Sale",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"PT Demo Customer Updated\",\n  \"transactionDate\": \"2026-02-20T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            },
+            "description": "Update header (customerName, transactionDate). Jika ingin mengubah items, kirim field items lengkap. Karena keterbatasan implementasi backend, mengirim items akan membuat record baru dengan ID berbeda."
+          }
+        },
+        {
+          "name": "Delete Sale",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales/{{saleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales", "{{saleId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "description": "CRUD expenses. GET dan GET categories untuk semua authenticated user. POST/PATCH/DELETE membutuhkan MANAGER atau SUPER_ADMIN.",
+      "item": [
+        {
+          "name": "Get Expenses",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"expenseId\", list[0].id);",
+                  "    if (list[0].expenseCategoryId) pm.environment.set(\"expenseCategoryId\", list[0].expenseCategoryId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"]
+            }
+          }
+        },
+        {
+          "name": "Get Expense Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const list = body && Array.isArray(body.data) ? body.data : [];",
+                  "if (list.length > 0 && list[0] && list[0].id) {",
+                  "    pm.environment.set(\"expenseCategoryId\", list[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "categories"]
+            },
+            "description": "Daftar master kategori biaya. Berguna untuk mengambil expenseCategoryId saat membuat expense baru."
+          }
+        },
+        {
+          "name": "Get Expense Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Expense",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { body = {}; }",
+                  "const created = body && body.data ? body.data : {};",
+                  "if (created && created.id) {",
+                  "    pm.environment.set(\"expenseId\", created.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expenseCategoryId\": \"{{expenseCategoryId}}\",\n  \"expenseDate\": \"2026-02-20T00:00:00.000Z\",\n  \"title\": \"Office Internet Subscription\",\n  \"amount\": 750000,\n  \"notes\": \"Monthly operational internet cost\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"]
+            }
+          }
+        },
+        {
+          "name": "Update Expense",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Office Internet Subscription Updated\",\n  \"amount\": 800000,\n  \"notes\": \"Updated monthly operational internet cost\",\n  \"expenseCategoryId\": \"{{expenseCategoryId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Expense",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

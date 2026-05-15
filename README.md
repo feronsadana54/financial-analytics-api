@@ -221,6 +221,31 @@ Seed otomatis membuat tiga akun. Hanya untuk development local, jangan dipakai d
 
 SUPER_ADMIN tidak bisa mengubah status atau role akunnya sendiri. Hanya SUPER_ADMIN yang bisa membuat atau memodifikasi SUPER_ADMIN lain.
 
+## Postman Collection
+
+Koleksi Postman siap pakai tersedia di folder `docs/postman/`:
+
+- `docs/postman/financial-analytics-api.postman_collection.json` — request per resource (Auth, Dashboard, Users, Products, Categories, Sales, Expenses).
+- `docs/postman/financial-analytics-api.postman_environment.json` — environment `Financial Analytics Local` dengan variable `baseUrl`, `accessToken`, demo credentials, dan placeholder ID.
+
+### Cara import singkat
+
+1. Buka Postman → **Import** → pilih dua file di atas.
+2. Pilih environment **Financial Analytics Local** di pojok kanan atas Postman.
+3. Jalankan backend lokal (`npm run start:dev`) dan pastikan PostgreSQL aktif.
+4. Buka folder **Auth → Login Admin** dan klik **Send**. Token otomatis tersimpan ke variable `accessToken`.
+5. Endpoint protected lain akan otomatis memakai header `Authorization: Bearer {{accessToken}}`.
+
+Panduan lengkap (urutan request, auto-set ID dari response, troubleshooting, role matrix) ada di [`docs/postman/README.md`](docs/postman/README.md).
+
+Demo account yang dipakai di environment Postman:
+
+| Role        | Email                   | Password      |
+| ----------- | ----------------------- | ------------- |
+| SUPER_ADMIN | admin@financial.local   | Admin12345    |
+| MANAGER     | manager@financial.local | Manager12345  |
+| USER        | user@financial.local    | User12345     |
+
 ## Auth Quick Start
 
 1. Login via Swagger atau Postman dengan akun demo:
