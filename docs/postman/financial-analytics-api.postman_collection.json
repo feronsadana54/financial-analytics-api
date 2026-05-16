@@ -25,8 +25,8 @@
                   "let body = {};",
                   "try { body = pm.response.json(); } catch (error) { body = {}; }",
                   "",
-                  "const data = body && body.data ? body.data : {};",
-                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "var data = body && body.data ? body.data : {};",
+                  "var token = data.accessToken || data.token || body.accessToken;",
                   "if (token) {",
                   "    pm.environment.set(\"accessToken\", token);",
                   "    console.log(\"accessToken stored to environment\");",
@@ -73,10 +73,10 @@
                   "let body = {};",
                   "try { body = pm.response.json(); } catch (error) { body = {}; }",
                   "",
-                  "const data = body && body.data ? body.data : {};",
-                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "var data = body && body.data ? body.data : {};",
+                  "var token = data.accessToken || data.token || body.accessToken;",
                   "if (token) {",
-                  "    pm.environment.set(\"accessToken\", token);",
+                  "    pm.environment.set(\"managerToken\", token);",
                   "} else {",
                   "    console.warn(\"Login response did not contain accessToken\");",
                   "}"
@@ -116,10 +116,10 @@
                   "let body = {};",
                   "try { body = pm.response.json(); } catch (error) { body = {}; }",
                   "",
-                  "const data = body && body.data ? body.data : {};",
-                  "const token = data.accessToken || data.token || body.accessToken;",
+                  "var data = body && body.data ? body.data : {};",
+                  "var token = data.accessToken || data.token || body.accessToken;",
                   "if (token) {",
-                  "    pm.environment.set(\"accessToken\", token);",
+                  "    pm.environment.set(\"userToken\", token);",
                   "} else {",
                   "    console.warn(\"Login response did not contain accessToken\");",
                   "}"
@@ -159,10 +159,10 @@
                   "let body = {};",
                   "try { body = pm.response.json(); } catch (error) { body = {}; }",
                   "",
-                  "const data = body && body.data ? body.data : {};",
-                  "const token = data.accessToken || data.token;",
+                  "var data = body && body.data ? body.data : {};",
+                  "var token = data.accessToken || data.token;",
                   "if (token) {",
-                  "    pm.environment.set(\"accessToken\", token);",
+                  "    pm.environment.set(\"registeredUserToken\", token);",
                   "}"
                 ]
               }
@@ -175,7 +175,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo.user@example.com\",\n  \"password\": \"DemoUser12345\"\n}"
+              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo.user+{{$timestamp}}@example.com\",\n  \"password\": \"DemoUser12345\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
@@ -438,7 +438,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Finance Staff\",\n  \"email\": \"finance.staff@example.com\",\n  \"password\": \"Finance12345\",\n  \"role\": \"USER\",\n  \"status\": \"ACTIVE\"\n}"
+              "raw": "{\n  \"name\": \"Finance Staff\",\n  \"email\": \"finance.staff+{{$timestamp}}@example.com\",\n  \"password\": \"Finance12345\",\n  \"role\": \"USER\",\n  \"status\": \"ACTIVE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users",
@@ -457,7 +457,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Finance Staff Updated\",\n  \"email\": \"finance.staff.updated@example.com\"\n}"
+              "raw": "{\n  \"name\": \"Finance Staff Updated\",\n  \"email\": \"finance.staff.updated+{{$timestamp}}@example.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
@@ -565,6 +565,7 @@
                   "const list = body && Array.isArray(body.data) ? body.data : [];",
                   "if (list.length > 0 && list[0] && list[0].id) {",
                   "    pm.environment.set(\"productId\", list[0].id);",
+                  "    pm.environment.set(\"seedProductId\", list[0].id);",
                   "    if (list[0].categoryId) pm.environment.set(\"categoryId\", list[0].categoryId);",
                   "}"
                 ]
@@ -627,7 +628,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"name\": \"Wireless Keyboard\",\n  \"sku\": \"PRD-KEYBOARD-001\",\n  \"price\": 450000,\n  \"cost\": 275000,\n  \"stock\": 120\n}"
+              "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"name\": \"Wireless Keyboard {{$timestamp}}\",\n  \"sku\": \"PRD-KEYBOARD-{{$timestamp}}\",\n  \"price\": 450000,\n  \"cost\": 275000,\n  \"stock\": 120\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/products",
@@ -658,6 +659,20 @@
         },
         {
           "name": "Delete Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const seedProductId = pm.environment.get(\"seedProductId\");",
+                  "if (seedProductId) {",
+                  "    pm.environment.set(\"productId\", seedProductId);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [
@@ -754,7 +769,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Office Equipment\",\n  \"description\": \"Products related to office equipment and productivity tools\"\n}"
+              "raw": "{\n  \"name\": \"Office Equipment {{$timestamp}}\",\n  \"description\": \"Products related to office equipment and productivity tools\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/categories",
