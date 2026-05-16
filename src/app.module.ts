@@ -4,6 +4,7 @@ import { AuthModule } from "./auth/auth.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { DashboardModule } from "./dashboard/dashboard.module";
 import { ExpensesModule } from "./expenses/expenses.module";
+import { HealthController } from "./health.controller";
 import { PrismaModule } from "./prisma/prisma.module";
 import { ProductsModule } from "./products/products.module";
 import { SalesModule } from "./sales/sales.module";
@@ -20,6 +21,7 @@ import { UsersModule } from "./users/users.module";
     CategoriesModule,
     SalesModule,
     ExpensesModule
-  ]
+  ],
+  controllers: [HealthController]
 })
 export class AppModule {}

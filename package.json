@@ -4,8 +4,9 @@
   "description": "Financial analytics REST API for a business intelligence dashboard.",
   "private": true,
   "scripts": {
-    "start": "node dist/main",
+    "start": "node dist/src/main.js",
     "start:dev": "nest start --watch",
+    "start:prod": "node dist/src/main.js",
     "build": "prisma generate && nest build",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -9,7 +9,10 @@ import { TransformInterceptor } from "./common/interceptors/transform.intercepto
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const corsOrigin = configService.get<string>("CORS_ORIGIN") ?? "http://localhost:5173";
+  const corsOrigin = (configService.get<string>("CORS_ORIGIN") ?? "http://localhost:5173")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
   app.enableCors({ origin: corsOrigin, credentials: true });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
